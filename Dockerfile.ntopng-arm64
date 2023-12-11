@@ -1,4 +1,4 @@
-FROM debian:bullseye-slim
+FROM debian:bookworm-slim
 
 # Main dependencies and ntop.org apt package repo installation
 RUN apt-get update && \
