@@ -13,8 +13,11 @@ RUN apt-get update && \
     apt-get clean all && \
     rm -rf /var/lib/apt/lists/*
 
-# Entrypoint generation
-RUN echo '#!/bin/bash\n/etc/init.d/redis-server start\nntopng "$@" $NTOP_CONFIG' > /run.sh && \
+# redis.conf modification for different port when redis already runs on standard port 6379 on Docker host or exposed from another container
+RUN sed -i 's/^port .*/port 6380 /' "/etc/redis/redis.conf"
+
+# Entrypoint generation + ntopng redis port option as per above
+RUN echo '#!/bin/bash\n/etc/init.d/redis-server start\nntopng --redis 127.0.0.1:6380 "$@" $NTOP_CONFIG'  > /run.sh && \
     chmod +x /run.sh
 
 EXPOSE 3000
